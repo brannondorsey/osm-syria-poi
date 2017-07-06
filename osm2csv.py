@@ -13,6 +13,7 @@ def parse_args():
 
 def create_entry():
     return {
+        "id": None,
         "name": None,
         "name:en": None,
         "type": None,
@@ -39,7 +40,7 @@ def main():
 
     with open(args.output, 'wb') as csv_file:
         
-        fieldnames = ['name', 'name:en', 'type', 'int_name', 'old_name', 'old_name:en', 'country', 
+        fieldnames = ['id', 'name', 'name:en', 'type', 'int_name', 'old_name', 'old_name:en', 'country', 
                       'city', 'lat', 'long', 'website', 'date_added', 'description']
         csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         csv_writer.writeheader()
@@ -50,6 +51,7 @@ def main():
         for event, elem in ET.iterparse(args.input, events=("start", "end")):
             if event == 'start':
                 if elem.tag == 'node':
+                    if 'id'  in elem.attrib: entry['id'] = elem.attrib['id']
                     if 'lat' in elem.attrib: entry['lat'] = elem.attrib['lat']
                     if 'lon' in elem.attrib: entry['long'] = elem.attrib['lon']
                     if 'timestamp' in elem.attrib: entry['date_added'] = elem.attrib['timestamp']
